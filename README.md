@@ -10,6 +10,11 @@ installing Python 3: [The right and wrong way to set Python 3 as default on a Ma
 
 use pyenv to run multiple versions of Python: [How to use pyenv to run multiple versions of Python on a Mac](https://opensource.com/article/20/4/pyenv)
 
+[pyenv Tutorial](https://amaral.northwestern.edu/resources/guides/pyenv-tutorial)
+
+[__name__ == "__main__"](https://stackoverflow.com/questions/419163/what-does-if-name-main-do)
+
+
 ## Contact
 Eric H. Kawamoto: eric.kawamoto@baxter-academy.org
 
