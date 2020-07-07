@@ -3,8 +3,7 @@ import sys
 import math
 import tkinter as tk
 from tkinter import *
-#from tkinter import messagebox
-
+from tkinter import filedialog
 print(sys.version)
 if __name__ == "__main__":  
     print("PythonStats is being run directly") 
@@ -54,32 +53,37 @@ def ComputeMedian(inList):
 def PrintDataPoints(inList):
     m = len(inList)
     if m > 0:
+        outStr = ""
         if m < 10:
             i = 0
             for y in inList:
                 i += 1
-                print("Data point %d: %.2f" %(i, y))
+                outStr += "\nData point {0:d}: {1:.2f}".format(i, y)
         else:
             for i in range(0, 5):
-                print("Data point %d: %.2f" %(i+1, inList[i]))
-            print("    ...")
+                outStr += "\nData point {0:d}: {1:.2f}".format(i+1, inList[i])
+            outStr += "\n    ..."
             for i in range(m - 5, m):
-                print("Data point %d: %.2f" %(i+1, inList[i]))
-
+                outStr += "\nData point {0:d}: {1:.2f}".format(i+1, inList[i])
+                
+    return outStr
+    
 
 def PrintOutStats(inList):
     n = len(inList)
     avg = ComputeMean(inList)
     extremes = ComputeExtremes(inList)
-    print("\nFor %d data point(s), " %n)
-    print("    the maximum is %.2f" %extremes[1])
-    print("    the minimum is %.2f" %extremes[0])
-    print("    the mean (average) is %.2f" %avg)
+    outStr = "\nFor {0:d} data point(s)".format(n)
+    outStr += "\n    the maximum is {0:.2f}".format(extremes[1])
+    outStr += "\n    the maximum is {0:.2f}".format(extremes[0])
+    outStr += "\n    the mean (average) is {0:.2f}".format(avg)
     if n > 1:
         med = ComputeMedian(inList)
-        print("    the median is %.2f" %med)
+        outStr += "\n    the median is {0:.2f}".format(med)
         stdev = ComputeStdev(inList, avg)
-        print("    the std dev is %.2f" %stdev)
+        outStr += "\n    the std dev is {0:.2f}".format(stdev)
+        
+    return outStr
 
 
 def GetDataPointsFromConsole():
@@ -95,10 +99,11 @@ def GetDataPointsFromConsole():
     return numlist
     
 
-def GetDataPointsFromFile():
+def GetDataPointsFromFile(fName):
     numlist = []
-    print("Enter pathname of data file:", end = " ")
-    fName = input()
+    if fName == "":
+        print("Enter pathname of data file:", end = " ")
+        fName = input()
     try:
         f = open(fName, "r")
         for line in f:
@@ -117,21 +122,33 @@ def GetDataPointsFromFile():
 def PythonStatsGUIApp(arg):
     def OK_cmd():
         x = My_entry.get()
-        print("x = %s, arg = %s" %(x,arg))
+        #print("x = %s, arg = %s" %(x,arg))
         root.withdraw()
         if int(arg) == 1:
             #print("process data points")
-            sList = x.split(",")
-            numlist = []
-            for xx in sList:
-                numlist.append(float(xx))
-            print(numlist)
-        elif int(arg) == 2:
-            #print("process file name")
-            fName = x
-            print("file name is %s" %fName)
+            if x != "":
+                sList = x.split(",")
+                numlist = []
+                for xx in sList:
+                    numlist.append(float(xx))
+                print(numlist)
+            else:
+                print("No data points to be analyzed.")
+                quit()
+            
+        elif int(arg) == 3:
+            quit()
+            
+        n = len(numlist)
+        if n > 0:
+            s1 = PrintDataPoints(numlist)
+            s2 = PrintOutStats(numlist)
+            print(s1)
+            print(s2)
+        else:
+            print("No data points to be analyzed.")
         quit()
-        
+                
     def Cancel_cmd():
         quit()
         
@@ -147,27 +164,38 @@ def PythonStatsGUIApp(arg):
     if int(arg) == 1:    # input data points in text field
         root.title("Data entry")
         My_label = tk.Label(root,text="Enter data points:")
+        My_entry = tk.Entry(root)    
+        OK_button = tk.Button(root,text="OK",command=OK_cmd)
+        Cancel_button = tk.Button(root,text="Cancel",command=Cancel_cmd)
+    
+        My_label.place(x=0.5*w/10,y=2*h/8)
+        My_entry.place(x=4.5*w/10,y=2*h/8,height=30,width=5*w/10)
+        OK_button.place(x=w/2-100,y=5*h/8)
+        Cancel_button.place(x=w/2+50,y=5*h/8)
+        root.mainloop()
 
     elif int(arg) == 2:    # read data points from file
-        root.title("File name entry")
-        My_label = tk.Label(root,text="Enter path name of data file:")
+        root.filename = filedialog.askopenfilename(initialdir=".", title="Select file")
+        #print(root.filename)
+        numlist = GetDataPointsFromFile(root.filename)
+        n = len(numlist)
+        if n > 0:
+            s1 = PrintDataPoints(numlist)
+            s2 = PrintOutStats(numlist)
+            print(s1)
+            print(s2)
+        else:
+            print("No data points to be analyzed.")
+        quit()
         
     else:    # invalid command-line argument
         root.title("Error")
-        My_label = tk.Label(root,text="invalid CL argument")
-    
-    My_entry = tk.Entry(root)    
-    OK_button = tk.Button(root,text="OK",command=OK_cmd)
-    Cancel_button = tk.Button(root,text="Cancel",command=Cancel_cmd)
+        Cancel_button = tk.Button(root,text="Cancel",command=Cancel_cmd)
+        My_label = tk.Label(root,text="invalid command-line argument")
+        My_label.place(x=0.5*w/10,y=2*h/8)
+        Cancel_button.place(x=w/2-40,y=5*h/8)
+        root.mainloop()
 
-    My_label.place(x=0.5*w/10,y=2*h/8)
-    My_entry.place(x=4.5*w/10,y=2*h/8,height=30,width=5*w/10)
-    OK_button.place(x=w/2-100,y=5*h/8)
-    Cancel_button.place(x=w/2+50,y=5*h/8)
-    root.mainloop()
-    
-    
-    
 
 def PythonStatsConsoleApp():
     print("Enter 1 for keyboard input, 2 for file input:", end = " ")
@@ -178,7 +206,7 @@ def PythonStatsConsoleApp():
         numlist = GetDataPointsFromConsole()
         
     elif mode == 2:    # data read from file
-        numlist = GetDataPointsFromFile()
+        numlist = GetDataPointsFromFile("")
     
     else:
         print("Invalid mode; exiting program.")
@@ -186,8 +214,10 @@ def PythonStatsConsoleApp():
         
     n = len(numlist)
     if n > 0:
-        PrintDataPoints(numlist)
-        PrintOutStats(numlist)
+        s1 = PrintDataPoints(numlist)
+        s2 = PrintOutStats(numlist)
+        print(s1)
+        print(s2)
     else:
         print("No data points to be analyzed.")
 
