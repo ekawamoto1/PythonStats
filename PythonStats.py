@@ -13,9 +13,11 @@ def ComputeExtremes(inList):
     out.append(max(inList))
     return out
 
+
 def ComputeMean(inList):
     avg = sum(inList) / len(inList)
     return avg
+
 
 def ComputeStdev(inList, mean):
     m = len(inList)
@@ -30,6 +32,7 @@ def ComputeStdev(inList, mean):
         stdev = math.nan
     return stdev
 
+
 def ComputeMedian(inList):
     m = len(inList)
     if m > 1:
@@ -41,6 +44,7 @@ def ComputeMedian(inList):
         else:
             median = inList[m0]
     return median
+
 
 def PrintDataPoints(inList):
     m = len(inList)
@@ -57,6 +61,7 @@ def PrintDataPoints(inList):
             for i in range(m - 5, m):
                 print("Data point %d: %.2f" %(i+1, inList[i]))
 
+
 def PrintOutStats(inList):
     avg = ComputeMean(inList)
     extremes = ComputeExtremes(inList)
@@ -71,16 +76,8 @@ def PrintOutStats(inList):
         print("    the std dev is %.2f" %stdev)
 
 
-
-
-print("Enter 1 for keyboard input, 2 for file input:", end = " ")
-mode = int(input())
-#print("mode = %d" %mode)
-
-numlist = []
-n = 0
-if mode == 1:
-    print("When no more data is left to enter, simply hit return.")
+def GetDataPointsFromConsole():
+    numlist = []
     while True:
         x = input()
         if x == "":
@@ -89,38 +86,49 @@ if mode == 1:
             y = float(x)
             #print("You entered %d" %y)
             numlist.append(y)
-    n = len(numlist)
+    return numlist
     
-elif mode == 2:
+
+def GetDataPointsFromFile():
+    numlist = []
     print("Enter pathname of data file:", end = " ")
     fName = input()
     try:
         f = open(fName, "r")
         for line in f:
             line1 = line.strip('\n')
-            #ln = len(line1)
-            #print("line %d: %s, length %d" %(n, line1, ln))
             if len(line1) > 0:
                 numlist.append(float(line1))
         f.close()
-        #print(numlist)
-        n = len(numlist)
-        
+
     except IOError:
         print("File %s does not exist." %fName)
         quit()
+        
+    return numlist
     
+
+print("Enter 1 for keyboard input, 2 for file input:", end = " ")
+mode = int(input())
+
+if mode == 1:    # data entered from keyboard
+    print("When no more data is left to enter, simply hit return.")
+    numlist = GetDataPointsFromConsole()
+    
+elif mode == 2:    # data read from file
+    numlist = GetDataPointsFromFile()
+
 else:
     print("Invalid mode; exiting program.")
     quit()
     
+    
+n = len(numlist)
 if n > 0:
     PrintDataPoints(numlist)
     PrintOutStats(numlist)
 else:
     print("No data points to be analyzed.")
-
-
 
 
 
