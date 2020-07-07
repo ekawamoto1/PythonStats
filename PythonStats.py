@@ -42,7 +42,33 @@ def ComputeMedian(inList):
             median = inList[m0]
     return median
 
+def PrintDataPoints(inList):
+    m = len(inList)
+    if m > 0:
+        if m < 10:
+            i = 0
+            for y in inList:
+                i += 1
+                print("Data point %d: %.2f" %(i, y))
+        else:
+            for i in range(0, 5):
+                print("Data point %d: %.2f" %(i+1, inList[i]))
+            print("    ...")
+            for i in range(m - 5, m):
+                print("Data point %d: %.2f" %(i+1, inList[i]))
 
+def PrintOutStats(inList):
+    avg = ComputeMean(inList)
+    extremes = ComputeExtremes(inList)
+    print("\nFor %d data point(s), " %n)
+    print("    the maximum is %.2f" %extremes[1])
+    print("    the minimum is %.2f" %extremes[0])
+    print("    the mean (average) is %.2f" %avg)
+    if n > 1:
+        med = ComputeMedian(inList)
+        print("    the median is %.2f" %med)
+        stdev = ComputeStdev(inList, avg)
+        print("    the std dev is %.2f" %stdev)
 
 
 
@@ -87,31 +113,10 @@ elif mode == 2:
 else:
     print("Invalid mode; exiting program.")
     quit()
-
-if n > 0:
-    if n < 10:
-        i = 0
-        for y in numlist:
-            i += 1
-            print("Data point %d: %.2f" %(i, y))
-    else:
-        for i in range(0, 5):
-            print("Data point %d: %.2f" %(i+1, numlist[i]))
-        print("    ...")
-        for i in range(n - 5, n):
-            print("Data point %d: %.2f" %(i+1, numlist[i]))
     
-    avg = ComputeMean(numlist)
-    extremes = ComputeExtremes(numlist)
-    print("\nFor %d data point(s), " %n)
-    print("    the maximum is %.2f" %extremes[1])
-    print("    the minimum is %.2f" %extremes[0])
-    print("    the mean (average) is %.2f" %avg)
-    if n > 1:
-        med = ComputeMedian(numlist)
-        print("    the median is %.2f" %med)
-        stdev = ComputeStdev(numlist, avg)
-        print("    the std dev is %.2f" %stdev)
+if n > 0:
+    PrintDataPoints(numlist)
+    PrintOutStats(numlist)
 else:
     print("No data points to be analyzed.")
 
