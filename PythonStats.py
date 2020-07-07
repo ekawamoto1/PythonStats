@@ -30,6 +30,22 @@ def ComputeStdev(inList, mean):
         stdev = math.nan
     return stdev
 
+def ComputeMedian(inList):
+    m = len(inList)
+    if m > 1:
+        inList.sort()
+        #print(inList)
+        m0 = m // 2
+        if m % 2 == 0:
+            median = (inList[m0 - 1] + inList[m0]) / 2
+        else:
+            median = inList[m0]
+    return median
+
+
+
+
+
 
 print("Enter 1 for keyboard input, 2 for file input:", end = " ")
 mode = int(input())
@@ -92,10 +108,13 @@ if n > 0:
     print("    the minimum is %.2f" %extremes[0])
     print("    the mean (average) is %.2f" %avg)
     if n > 1:
+        med = ComputeMedian(numlist)
+        print("    the median is %.2f" %med)
         stdev = ComputeStdev(numlist, avg)
         print("    the std dev is %.2f" %stdev)
 else:
     print("No data points to be analyzed.")
+
 
 
 
@@ -105,23 +124,24 @@ else:
 # Enter 1 for keyboard input, 2 for file input: 1
 # When no more data is left to enter, simply hit return.
 # 6
+# 1
 # 5
+# 2
 # 4
 # 3
-# 2
-# 1
 # 
 # Data point 1: 6.00
-# Data point 2: 5.00
-# Data point 3: 4.00
-# Data point 4: 3.00
-# Data point 5: 2.00
-# Data point 6: 1.00
+# Data point 2: 1.00
+# Data point 3: 5.00
+# Data point 4: 2.00
+# Data point 5: 4.00
+# Data point 6: 3.00
 # 
 # For 6 data point(s), 
 #     the maximum is 6.00
 #     the minimum is 1.00
 #     the mean (average) is 3.50
+#     the median is 3.50
 #     the std dev is 1.87
 # 
 #  ----jGRASP: operation complete.
@@ -130,14 +150,43 @@ else:
 # PythonStats is being run directly
 # Enter 1 for keyboard input, 2 for file input: 1
 # When no more data is left to enter, simply hit return.
-# 3.5
+# 7
+# 6
+# 5
+# 4
+# 3
+# 2
+# 1
 # 
-# Data point 1: 3.50
+# Data point 1: 7.00
+# Data point 2: 6.00
+# Data point 3: 5.00
+# Data point 4: 4.00
+# Data point 5: 3.00
+# Data point 6: 2.00
+# Data point 7: 1.00
+# 
+# For 7 data point(s), 
+#     the maximum is 7.00
+#     the minimum is 1.00
+#     the mean (average) is 4.00
+#     the median is 4.00
+#     the std dev is 2.16
+# 
+#  ----jGRASP: operation complete.
+# 
+#  ----jGRASP exec: python3 PythonStats.py
+# PythonStats is being run directly
+# Enter 1 for keyboard input, 2 for file input: 1
+# When no more data is left to enter, simply hit return.
+# 3.4
+# 
+# Data point 1: 3.40
 # 
 # For 1 data point(s), 
-#     the maximum is 3.50
-#     the minimum is 3.50
-#     the mean (average) is 3.50
+#     the maximum is 3.40
+#     the minimum is 3.40
+#     the mean (average) is 3.40
 # 
 #  ----jGRASP: operation complete.
 # 
@@ -170,6 +219,7 @@ else:
 #     the maximum is 68.00
 #     the minimum is 57.00
 #     the mean (average) is 61.00
+#     the median is 60.00
 #     the std dev is 3.50
 # 
 #  ----jGRASP: operation complete.
