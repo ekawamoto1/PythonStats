@@ -18,14 +18,14 @@ def ComputeMean(inList):
     return avg
 
 def ComputeStdev(inList, mean):
-    n = len(inList)
+    m = len(inList)
     #print("ComputeStdev %d" %n)
-    if n > 1:
+    if m > 1:
         dot_prod = []
-        for i in range(0, n):
+        for i in range(0, m):
             term = inList[i] - mean
             dot_prod.append(term * term)
-        stdev = math.sqrt(sum(dot_prod) / (n - 1))
+        stdev = math.sqrt(sum(dot_prod) / (m - 1))
     else:
         stdev = math.nan
     return stdev
@@ -35,10 +35,9 @@ print("Enter 1 for keyboard input, 2 for file input:", end = " ")
 mode = int(input())
 #print("mode = %d" %mode)
 
+numlist = []
+n = 0
 if mode == 1:
-    numlist = []
-    i = 0
-    
     print("When no more data is left to enter, simply hit return.")
     while True:
         x = input()
@@ -48,39 +47,13 @@ if mode == 1:
             y = float(x)
             #print("You entered %d" %y)
             numlist.append(y)
-            
     n = len(numlist)
-    if n > 0:
-        for y in numlist:
-            i += 1
-            print("Data point %d: %.2f" %(i, y))
-        
-        #avg = sum(numlist) / n
-        avg = ComputeMean(numlist)
-        extremes = ComputeExtremes(numlist)
-        print("\nFor %d data point(s), " %n)
-        print("    the maximum is %.2f" %extremes[1])
-        print("    the minimum is %.2f" %extremes[0])
-        print("    the mean (average) is %.2f" %avg)
-        if n > 1:
-            stdev = ComputeStdev(numlist, avg)
-            #dot_prod = []
-            #for i in range(0, len(numlist)):
-            #    dot_prod.append((numlist[i] - avg) * (numlist[i] - avg))
-            #print(dot_prod)
-            #print("sum = %.2f, arg = %.2f, sqrt = %.2f" %(sum(dot_prod), sum(dot_prod)/(n-1), math.sqrt(sum(dot_prod)/(n-1))))
-            #stdev = math.sqrt(sum(dot_prod) / (n - 1))
-            print("    the std dev is %.2f" %stdev)
-    else:
-        print("No data was entered.")
     
 elif mode == 2:
-    numlist = []
     print("Enter pathname of data file:", end = " ")
     fName = input()
     try:
         f = open(fName, "r")
-        n = 0
         for line in f:
             line1 = line.strip('\n')
             #ln = len(line1)
@@ -90,41 +63,39 @@ elif mode == 2:
         f.close()
         #print(numlist)
         n = len(numlist)
-        if n > 0:
-            if n < 10:
-                i = 0
-                for y in numlist:
-                    i += 1
-                    print("Data point %d: %.2f" %(i, y))
-            else:
-                for i in range(0, 5):
-                    print("Data point %d: %.2f" %(i+1, numlist[i]))
-                print("    ...")
-                for i in range(n - 5, n):
-                    print("Data point %d: %.2f" %(i+1, numlist[i]))
-            #avg = sum(numlist) / n
-            avg = ComputeMean(numlist)
-            extremes = ComputeExtremes(numlist)
-            print("\nFor %d data point(s), " %n)
-            print("    the maximum is %.2f" %extremes[1])
-            print("    the minimum is %.2f" %extremes[0])
-            print("    the mean (average) is %.2f" %avg)
-            if n > 1:
-                stdev = ComputeStdev(numlist, avg)
-                #dot_prod = []
-                #for i in range(0, len(numlist)):
-                #    dot_prod.append((numlist[i] - avg) * (numlist[i] - avg))
-                #print(dot_prod)
-                #print("sum = %.2f, arg = %.2f, sqrt = %.2f" %(sum(dot_prod), sum(dot_prod)/(n-1), math.sqrt(sum(dot_prod)/(n-1))))
-                #stdev = math.sqrt(sum(dot_prod) / (n - 1))
-                print("    the std dev is %.2f" %stdev)
-        else:
-            print("File %s contains no data." %fName)
+        
     except IOError:
         print("File %s does not exist." %fName)
+        quit()
     
 else:
     print("Invalid mode; exiting program.")
+    quit()
+
+if n > 0:
+    if n < 10:
+        i = 0
+        for y in numlist:
+            i += 1
+            print("Data point %d: %.2f" %(i, y))
+    else:
+        for i in range(0, 5):
+            print("Data point %d: %.2f" %(i+1, numlist[i]))
+        print("    ...")
+        for i in range(n - 5, n):
+            print("Data point %d: %.2f" %(i+1, numlist[i]))
+    
+    avg = ComputeMean(numlist)
+    extremes = ComputeExtremes(numlist)
+    print("\nFor %d data point(s), " %n)
+    print("    the maximum is %.2f" %extremes[1])
+    print("    the minimum is %.2f" %extremes[0])
+    print("    the mean (average) is %.2f" %avg)
+    if n > 1:
+        stdev = ComputeStdev(numlist, avg)
+        print("    the std dev is %.2f" %stdev)
+else:
+    print("No data points to be analyzed.")
 
 
 
@@ -175,7 +146,7 @@ else:
 # Enter 1 for keyboard input, 2 for file input: 1
 # When no more data is left to enter, simply hit return.
 # 
-# No data was entered.
+# No data points to be analyzed.
 # 
 #  ----jGRASP: operation complete.
 # 
@@ -220,7 +191,7 @@ else:
 # PythonStats is being run directly
 # Enter 1 for keyboard input, 2 for file input: 2
 # Enter pathname of data file: testdata3.txt
-# File testdata3.txt contains no data.
+# No data points to be analyzed.
 # 
 #  ----jGRASP: operation complete.
 # 
