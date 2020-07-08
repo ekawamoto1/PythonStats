@@ -260,11 +260,16 @@ def PythonStatsConsoleApp():
 # --------------------------------------------------
 # main body of PythonStats.py
 # must define functions above before this is executed
+
+# get command-line arguments, if any
 nArgs = len(sys.argv)
 #print("nArgs = %d, sys.argv[0] = %s" %(nArgs, sys.argv[0]))
+
+# if command-line arg is supplied, run GUI version
 if nArgs > 1:
     #print("sys.argv[1] = %s" %(sys.argv[1]))
     PythonStatsGUIApp(sys.argv[1])
+# otherwise, run console version
 else:
     PythonStatsConsoleApp()
     
