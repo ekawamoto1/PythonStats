@@ -3,7 +3,7 @@ import sys
 import math
 import tkinter as tk
 from tkinter import *
-from tkinter import filedialog
+from tkinter import filedialog as fd
 print(sys.version)
 if __name__ == "__main__":  
     print("PythonStats is being run directly") 
@@ -106,13 +106,13 @@ def GetDataPointsFromFile(fName):
         fName = input()
     try:
         f = open(fName, "r")
-        for line in f:
-            line1 = line.strip('\n')
-            if len(line1) > 0:
+        for line in f:    # this reads all lines of file (even blank ones) to the very end
+            line1 = line.strip('\n')    # each line of f comes with \n, which must be stripped
+            if len(line1) > 0:    # blank lines are ignored
                 numlist.append(float(line1))
         f.close()
 
-    except IOError:
+    except IOError:    # if error on attempt to open file (e.g., doesn't exist, etc.)
         print("File %s does not exist." %fName)
         quit()
         
@@ -123,7 +123,7 @@ def PythonStatsGUIApp(arg):
     def OK_cmd():
         x = My_entry.get()
         #print("x = %s, arg = %s" %(x,arg))
-        root.withdraw()
+        root.withdraw()    # close window after OK button is clicked and text field is read
         if int(arg) == 1:
             #print("process data points")
             if x != "":
@@ -143,13 +143,28 @@ def PythonStatsGUIApp(arg):
         if n > 0:
             s1 = PrintDataPoints(numlist)
             s2 = PrintOutStats(numlist)
-            print(s1)
-            print(s2)
+            s3 = s1 + "\n" + s2
+            w2 = 250
+            h2 = 360
+            geom_str2 = "{}x{}+{}+{}".format(w2,h2,xp,yp)
+            root2 = tk.Toplevel()
+            root2.geometry(geom_str2)
+            root2.title("Stats")
+            My_label = tk.Label(root2,text=s3)
+            My_label.place(x=0.5*w2/10,y=0)
+            OK_button = tk.Button(root2,text="OK",command=OK_cmd2)
+            OK_button.place(x=w2/2-35,y=8.7*h2/10)
+            root2.bind('<Return>', lambda event: OK_cmd2())
+            root2.mainloop()
+            #print(s3)
         else:
             print("No data points to be analyzed.")
         quit()
                 
     def Cancel_cmd():
+        quit()
+        
+    def OK_cmd2():
         quit()
         
     w = 500
@@ -172,18 +187,37 @@ def PythonStatsGUIApp(arg):
         My_entry.place(x=4.5*w/10,y=2*h/8,height=30,width=5*w/10)
         OK_button.place(x=w/2-100,y=5*h/8)
         Cancel_button.place(x=w/2+50,y=5*h/8)
+        root.bind('<Return>', lambda event: OK_cmd())
         root.mainloop()
 
     elif int(arg) == 2:    # read data points from file
-        root.filename = filedialog.askopenfilename(initialdir=".", title="Select file")
-        #print(root.filename)
-        numlist = GetDataPointsFromFile(root.filename)
+        root.overrideredirect(True)
+        root.geometry('0x0+0+0')    # these two lines hide the root window
+        root.focus_force()    # this forces AskOpenFilename dialog to have focus
+        fName = fd.askopenfilename(initialdir=".",title="Select file",filetypes=(("txt files","*.txt"),("all files","*.*")))
+        #print(fName)
+        if fName == "":
+            quit()
+            
+        numlist = GetDataPointsFromFile(fName)
         n = len(numlist)
         if n > 0:
             s1 = PrintDataPoints(numlist)
             s2 = PrintOutStats(numlist)
-            print(s1)
-            print(s2)
+            s3 = s1 + "\n" + s2
+            w2 = 250
+            h2 = 360
+            geom_str2 = "{}x{}+{}+{}".format(w2,h2,xp,yp)
+            root2 = tk.Toplevel()
+            root2.geometry(geom_str2)
+            root2.title("Stats")
+            My_label = tk.Label(root2,text=s3)
+            My_label.place(x=0.5*w2/10,y=0)
+            OK_button = tk.Button(root2,text="OK",command=OK_cmd2)
+            OK_button.place(x=w2/2-35,y=8.7*h2/10)
+            root2.bind('<Return>', lambda event: OK_cmd2())
+            root2.mainloop()
+            #print(s3)
         else:
             print("No data points to be analyzed.")
         quit()
@@ -194,6 +228,7 @@ def PythonStatsGUIApp(arg):
         My_label = tk.Label(root,text="invalid command-line argument")
         My_label.place(x=0.5*w/10,y=2*h/8)
         Cancel_button.place(x=w/2-40,y=5*h/8)
+        root.bind('<Return>', lambda event: Cancel_cmd())
         root.mainloop()
 
 
@@ -216,8 +251,8 @@ def PythonStatsConsoleApp():
     if n > 0:
         s1 = PrintDataPoints(numlist)
         s2 = PrintOutStats(numlist)
-        print(s1)
-        print(s2)
+        s3 = s1 + "\n" + s2
+        print(s3)
     else:
         print("No data points to be analyzed.")
 
