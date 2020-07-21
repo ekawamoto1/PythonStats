@@ -12,83 +12,124 @@ else:
 print("")
     
 
-def ComputeExtremes(inList):
-    out = []
-    out.append(min(inList))
-    out.append(max(inList))
-    return out
+class Dataset:
+    numPts = 0
+    mean = 0.0
+    dList = []
+    
+    def __init__(self, dList):
+        self.numPts = len(self.dList)
+        
+    def GetNumPts(self):
+        return len(self.dList)
+        
+    def ClearArray(self):
+        self.dList.clear()
+    
+    def AddArray(self, inList):
+        self.dList = inList
 
+    def GetArray(self):
+        return self.dList
 
-def ComputeMean(inList):
-    avg = sum(inList) / len(inList)
-    return avg
-
-
-def ComputeStdev(inList, mean):
-    m = len(inList)
-    #print("ComputeStdev %d" %n)
-    if m > 1:
-        dot_prod = []
-        for i in range(0, m):
-            term = inList[i] - mean
-            dot_prod.append(term * term)
-        stdev = math.sqrt(sum(dot_prod) / (m - 1))
-    else:
-        stdev = math.nan
-    return stdev
-
-
-def ComputeMedian(inList):
-    m = len(inList)
-    if m > 1:
-        inList.sort()
-        #print(inList)
-        m0 = m // 2
-        if m % 2 == 0:
-            median = (inList[m0 - 1] + inList[m0]) / 2
+    def AddPoint(self, x):
+        self.dList.append(float(x))
+        
+    def GetPoint(self, i):
+        pt = 0.0
+        self.numPts = len(self.dList)
+        if i >= 0 and i < self.numPts:
+            pt = self.dList[i]
+        return pt
+    
+    def ComputeExtremes(self):
+        out = []
+        max = -float('inf')
+        min = float('inf')
+        self.numPts = len(self.dList)
+        for x in self.dList:
+            if x > max:
+                max = x
+            if x < min:
+                min = x
+        out = [min, max]
+        return out
+    
+    def ComputeMean(self):
+        self.numPts = len(self.dList)
+        sum = 0.0
+        if self.numPts > 0:
+            for term in self.dList:
+                sum += term
+            self.mean = sum / self.numPts
+        return self.mean
+        
+    def ComputeStdev(self):
+        self.numPts = len(self.dList)
+        stdev = 0.0
+        if self.numPts > 1:
+            sum = 0.0
+            for x in self.dList:
+                term = x - self.mean
+                sum += term * term
+            stdev = math.sqrt(sum / (self.numPts - 1))
         else:
-            median = inList[m0]
-    return median
+            stdev = math.nan
+        return stdev
+   
+    def ComputeMedian(self):
+        self.numPts = len(self.dList)
+        median = 0.0
+        if self.numPts > 1:
+            self.dList.sort()
+            m0 = self.numPts // 2;
+            if self.numPts % 2 == 0:
+                median = (self.dList[m0 - 1] + self.dList[m0]) / 2
+            else:
+                median = self.dList[m0]
+        return median            
 
 
-def PrintDataPoints(inList):
-    m = len(inList)
+def PrintDataPoints(ds):
+    m = ds.GetNumPts()
     outStr = ""
     if m > 0:
         if m < 10:
             i = 0
-            for y in inList:
-                i += 1
-                outStr += "Data point {0:d}: {1:.2f}\n".format(i, y)
+            for i in range(0, m):
+                y = ds.GetPoint(i)
+                outStr += "Data point {0:d}: {1:.2f}\n".format(i+1, y)
         else:
             for i in range(0, 5):
-                outStr += "Data point {0:d}: {1:.2f}\n".format(i+1, inList[i])
+                y = ds.GetPoint(i)
+                outStr += "Data point {0:d}: {1:.2f}\n".format(i+1, y)
             outStr += "     ...\n"
             for i in range(m - 5, m):
-                outStr += "Data point {0:d}: {1:.2f}\n".format(i+1, inList[i])
+                y = ds.GetPoint(i)
+                outStr += "Data point {0:d}: {1:.2f}\n".format(i+1, y)
                 
     return outStr
     
 
-def PrintOutStats(inList):
-    n = len(inList)
-    avg = ComputeMean(inList)
-    extremes = ComputeExtremes(inList)
+def PrintOutStats(ds):
+    n = ds.GetNumPts()
+    avg = ds.ComputeMean()
+    extremes = ds.ComputeExtremes()
     outStr = "\nFor {0:d} data point(s)".format(n)
     outStr += "\n    the maximum is {0:.2f}".format(extremes[1])
     outStr += "\n    the maximum is {0:.2f}".format(extremes[0])
     outStr += "\n    the mean (average) is {0:.2f}".format(avg)
     if n > 1:
-        med = ComputeMedian(inList)
+        med = ds.ComputeMedian()
         outStr += "\n    the median is {0:.2f}".format(med)
-        stdev = ComputeStdev(inList, avg)
+        stdev = ds.ComputeStdev()
         outStr += "\n    the std dev is {0:.2f}".format(stdev)
         
     return outStr
 
 
 def GetDataPointsFromConsole():
-    numlist = []
+    ds = Dataset([])
     i = 0
     while True:
         i += 1
@@ -100,12 +141,12 @@ def GetDataPointsFromConsole():
         else:
             y = float(x)
             #print("You entered %d" %y)
-            numlist.append(y)
-    return numlist
+            ds.AddPoint(y)
+    return ds
     
 
 def GetDataPointsFromFile(fName):
-    numlist = []
+    ds = Dataset([]);
     if fName == "":
         print("\nEnter pathname of data file:", end = " ")
         fName = input()
@@ -114,14 +155,14 @@ def GetDataPointsFromFile(fName):
         for line in f:    # this reads all lines of file (even blank ones) to the very end
             line1 = line.strip('\n')    # each line of f comes with \n, which must be stripped
             if len(line1) > 0:    # blank lines are ignored
-                numlist.append(float(line1))
+                ds.AddPoint(float(line1))
         f.close()
 
     except IOError:    # if error on attempt to open file (e.g., doesn't exist, etc.)
         print("File %s does not exist." %fName)
         quit()
         
-    return numlist
+    return ds
     
 
 def PythonStatsGUIApp(arg):
@@ -133,10 +174,10 @@ def PythonStatsGUIApp(arg):
             #print("process data points")
             if x != "":
                 sList = x.split(",")
-                numlist = []
+                ds = Dataset([])
                 for xx in sList:
-                    numlist.append(float(xx))
-                print(numlist)
+                    ds.AddPoint(float(xx))
+                print(ds.dList)
             else:
                 print("No data points to be analyzed.")
                 quit()
@@ -144,10 +185,10 @@ def PythonStatsGUIApp(arg):
         elif int(arg) == 3:
             quit()
             
-        n = len(numlist)
+        n = ds.GetNumPts()
         if n > 0:
-            s1 = PrintDataPoints(numlist)
-            s2 = PrintOutStats(numlist)
+            s1 = PrintDataPoints(ds)
+            s2 = PrintOutStats(ds)
             s3 = s1 + "\n" + s2
             w2 = 250
             h2 = 360
@@ -204,11 +245,11 @@ def PythonStatsGUIApp(arg):
         if fName == "":
             quit()
             
-        numlist = GetDataPointsFromFile(fName)
-        n = len(numlist)
+        ds = GetDataPointsFromFile(fName)
+        n = ds.GetNumPts()
         if n > 0:
-            s1 = PrintDataPoints(numlist)
-            s2 = PrintOutStats(numlist)
+            s1 = PrintDataPoints(ds)
+            s2 = PrintOutStats(ds)
             s3 = s1 + "\n" + s2
             w2 = 250
             h2 = 360
@@ -243,20 +284,20 @@ def PythonStatsConsoleApp():
     
     if mode == 1:    # data entered from keyboard
         print("\nWhen no more data is left to enter, simply hit return.")
-        numlist = GetDataPointsFromConsole()
+        ds = GetDataPointsFromConsole()
         s = ""
         
     elif mode == 2:    # data read from file
-        numlist = GetDataPointsFromFile("")
-        s = PrintDataPoints(numlist)
+        ds = GetDataPointsFromFile("")
+        s = PrintDataPoints(ds)
         
     else:
         print("Invalid mode; exiting program.")
         quit()
         
-    n = len(numlist)
+    n = ds.GetNumPts()
     if n > 0:
-        s += PrintOutStats(numlist)
+        s += PrintOutStats(ds)
         print(s)
     else:
         print("No data points to be analyzed.")

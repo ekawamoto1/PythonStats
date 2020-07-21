@@ -23,7 +23,13 @@ more about Tkinter: [Hello, Tkinter](https://effbot.org/tkinterbook/tkinter-hell
 
 Toplevel widgets in Tk, binding keyboard events: [Open a new Window with a button in Python-Tkinter](https://www.geeksforgeeks.org/open-a-new-window-with-a-button-in-python-tkinter/) 
 
+Python 3 OOP: [Object-Oriented Programming (OOP) in Python 3](https://realpython.com/python3-object-oriented-programming/)
+
+more about Python OOP: [Python - Object Oriented](https://www.tutorialspoint.com/python/python_classes_objects.htm)
+
 ## Running Journal
+Mon 07/20: separated list and associated methods into a Dataset class
+
 Wed 07/08: debugged issues with Tk widgets vs. user-defined Tk windows
 
 Tue 07/07: added GUI functionality
