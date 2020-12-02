@@ -36,7 +36,7 @@ Tue 07/07: added GUI functionality
 
 Mon 07/06: installed Python 3.8.3 after installing pyenv and Homebrew; implemented basic funcionality
 
-Tue 12/01: added comment to test 'git status', 'git add'
+
 
 ## Contact
 Eric H. Kawamoto: eric.kawamoto@baxter-academy.org
